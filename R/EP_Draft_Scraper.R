@@ -11,16 +11,16 @@
 #' @param position Boolean about whether to include the position of the player.
 #' @param shoots Boolean about whether to include the handedness of the player.
 #' @param Stats vector of the wanted stats. 
-#'     S - Season
-#'     Team - Team
-#'     League - League
-#'     GP - Games Played
-#'     G - Goals
-#'     A - Assists
-#'     TP - Total Points
-#'     PIM - Penalties in Minutes
-#'     +/- - Plus/Minus
-#'     sv% - Save Percentage (for goalies)
+#'     S - Season,
+#'     Team - Team,
+#'     League - League,
+#'     GP - Games Played,
+#'     G - Goals,
+#'     A - Assists,
+#'     TP - Total Points,
+#'     PIM - Penalties in Minutes,
+#'     +/- - Plus/Minus,
+#'     sv% - Save Percentage (for goalies),
 #'     GAA - Goals Against Average (for goalies)
 #' @param place.birth Boolean about whether to include the birthplace of the player.
 #' @param pbsep Boolean about whether the birthplace should be split into Country, State, and City. place.birth has to be true for this to matter.
