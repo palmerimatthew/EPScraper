@@ -1,0 +1,20 @@
+Package: EPScraper
+Title: Scrapers For EliteProspects
+Version: 0.0.0.9000
+Authors@R: person("Matthew", "Palmeri", email = "matthewpalmeri@outlook.com", role = c("aut", "cre"))
+Description: This package contains functions useful for scrapping information off of the website
+    eliteprospects.com. Included in this are functions to gather information for an individual player,
+    an individual goalie, as well as functions to grab all the information from a draft or league stats
+    page (as well as helper functions).
+Depends: R (>= 3.5.3)
+Imports: 
+    rvest (>= 0.3.2),
+    stringr (>= 1.4.0),
+    tidyr (>= 0.8.3),
+    dplyr (>= 0.8.0.1),
+    XML (>= 3.98-1.19),
+    lubridate (>= 1.7.4),
+    magrittr (>= 1.5)
+License: MIT | file LICENSE
+Encoding: UTF-8
+LazyData: true
