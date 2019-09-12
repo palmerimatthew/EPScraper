@@ -60,14 +60,14 @@ EP_Draft_Scraper <- function(Data, Agerange = c(17, 25), draft.year = T, draft.p
   if (Goalie) {
     goalie_links <- links[goalie_spots]
   }
-  player_template <- Ind_Scraper(player_links[1], Agerange, draft.year, draft.pick, round, draft.elig, Agerel, position, 
+  player_template <- Ep_Ind_Scraper(player_links[1], Agerange, draft.year, draft.pick, round, draft.elig, Agerel, position, 
                                  shoots, Stats, place.birth, pbsep, Country, height, weight, date.birth, dbsep, drafted.team, reg.playoffs)
   
   player_data <- player_template %>%
     filter(Season == 'F')
   
   for(link in player_links) {
-    temp <- Ind_Scraper(link, Agerange, draft.year, draft.pick, round, draft.elig, Agerel, position, 
+    temp <- EP_Ind_Scraper(link, Agerange, draft.year, draft.pick, round, draft.elig, Agerel, position, 
                         shoots, Stats, place.birth, pbsep, Country, height, weight, date.birth, dbsep, drafted.team, reg.playoffs)
     player_data <- player_data %>%
       rbind(temp)
