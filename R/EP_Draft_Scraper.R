@@ -24,7 +24,7 @@
 #'     GAA - Goals Against Average (for goalies)
 #' @param place.birth Boolean about whether to include the birthplace of the player.
 #' @param pbsep Boolean about whether the birthplace should be split into Country, State, and City. place.birth has to be true for this to matter.
-#' @param Country Boolean about whether to include the country the player represents (or would represent) in international tournaments. Currently just grabs the first if a player has multiple, but eliteprospects is generally good about putting the correct one first.
+#' @param country Boolean about whether to include the country the player represents (or would represent) in international tournaments. Currently just grabs the first if a player has multiple, but eliteprospects is generally good about putting the correct one first.
 #' @param height Boolean about whether to include the height of the player. This is in centimeters.
 #' @param weight Boolean about whether to include the weight of the player. This is in pounds.
 #' @param date.birth Boolean about whether to include the date of birth of the player.
@@ -37,7 +37,7 @@
 EP_Draft_Scraper <- function(Data, Agerange = c(17, 25), draft.year = T, draft.pick = T, round = T, 
                           Agerel = "9/15", Goalie = F, position = T, shoots = T, 
                           Stats = c("S", "Team", "League", "GP", "G", "A", "TP", "PIM", "+/-", "sv%", "GAA"),
-                          place.birth = T, pbsep = T, Country = T, height = T, weight = T, date.birth = T, 
+                          place.birth = T, pbsep = T, country = T, height = T, weight = T, date.birth = T, 
                           dbsep = T, drafted.team = T, reg.playoffs = 'R') {
   links <- paste(readLines(Data), collapse = "\n") %>%
     stringr::str_match_all("<a href=\"(.*?)\"") %>%
@@ -61,14 +61,14 @@ EP_Draft_Scraper <- function(Data, Agerange = c(17, 25), draft.year = T, draft.p
     goalie_links <- links[goalie_spots]
   }
   player_template <- Ep_Ind_Scraper(player_links[1], Agerange, draft.year, draft.pick, round, draft.elig, Agerel, position, 
-                                 shoots, Stats, place.birth, pbsep, Country, height, weight, date.birth, dbsep, drafted.team, reg.playoffs)
+                                 shoots, Stats, place.birth, pbsep, country, height, weight, date.birth, dbsep, drafted.team, reg.playoffs)
   
   player_data <- player_template %>%
     filter(Season == 'F')
   
   for(link in player_links) {
     temp <- EP_Ind_Scraper(link, Agerange, draft.year, draft.pick, round, draft.elig, Agerel, position, 
-                        shoots, Stats, place.birth, pbsep, Country, height, weight, date.birth, dbsep, drafted.team, reg.playoffs)
+                        shoots, Stats, place.birth, pbsep, country, height, weight, date.birth, dbsep, drafted.team, reg.playoffs)
     player_data <- player_data %>%
       rbind(temp)
   }
