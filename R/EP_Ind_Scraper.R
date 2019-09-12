@@ -433,8 +433,8 @@ relative_age <- function(from, to) {
   middle_age <- from_lt %>%
     lubridate::interval(to_lt[1]) %>%
     lubridate::as.period('days') %>%
-    .$day %>%
-    magrittr::divide_by(365)
+    as.numeric() %>%
+    magrittr::divide_by(365*24*60*60)
   
   age + middle_age
 }
