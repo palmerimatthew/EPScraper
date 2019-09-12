@@ -50,14 +50,14 @@ EP_Ind_Scraper <- function(website, Agerange = c(17, 25), draft.year = T, draft.
   #Birthdate for age in table
   Birth_Date <- information %>%
     .[grep('Date of Birth', .) + 2] %>%
-    str_split('<|>') %>%
+    stringr::str_split('<|>') %>%
     .[[1]] %>%
     .[3] %>%
     trimws()
   if(!grepl(',', Birth_Date)) {
     control <- F
   } else {
-    Birth_Date <- mdy(Birth_Date)
+    Birth_Date <- lubridate::mdy(Birth_Date)
   }
   
   stat_table <- get_EP_table(html, reg.playoffs) #Getting stats table
@@ -66,11 +66,11 @@ EP_Ind_Scraper <- function(website, Agerange = c(17, 25), draft.year = T, draft.
     control <- F
   } else {
     stat_table <- stat_table %>%
-      mutate(Season = add_missing_season(as.character(S)), #filling in missing season data
+      dplyr::mutate(Season = add_missing_season(as.character(S)), #filling in missing season data
              Age = exact_age(Season, Birth_Date, Agerel),
              age_at_draft = exact_age(Season, Birth_Date, "9/15")) %>% #Adding age to table
-      select(Season, Age, age_at_draft, Team:`+/-`) %>%
-      filter(Age >= Agerange[1] & Age <= Agerange[2])
+      dplyr::select(Season, Age, age_at_draft, Team:`+/-`) %>%
+      dplyr::filter(Age >= Agerange[1] & Age <= Agerange[2])
   }
   if (control) {
     if(nrow(stat_table) == 0) {
@@ -84,7 +84,7 @@ EP_Ind_Scraper <- function(website, Agerange = c(17, 25), draft.year = T, draft.
     if(weight) {
       Weight <- information %>%
         .[grep('>Weight <', .) + 2] %>%
-        str_split('/') %>%
+        stringr::str_split('/') %>%
         .[[1]] %>%
         .[1] %>%
         gsub('lbs', '', .) %>%
@@ -101,7 +101,7 @@ EP_Ind_Scraper <- function(website, Agerange = c(17, 25), draft.year = T, draft.
     if(height) {
       Height <- information %>%
         .[grep('Height', .)[length(grep('Height', .))] + 2] %>%
-        str_split('/') %>%
+        stringr::str_split('/') %>%
         .[[1]] %>%
         trimws()
       if(Height[1] == '-') {
@@ -119,7 +119,7 @@ EP_Ind_Scraper <- function(website, Agerange = c(17, 25), draft.year = T, draft.
     if(country) {
       Country <- information %>%
         .[grep('Nation', .) + 2] %>%
-        str_split('<|>') %>%
+        stringr::str_split('<|>') %>%
         .[[1]] %>%
         .[3] %>%
         trimws()
@@ -130,8 +130,8 @@ EP_Ind_Scraper <- function(website, Agerange = c(17, 25), draft.year = T, draft.
     if(place.birth) {
       Birth_Place <- information %>%
         .[grep('Place of Birth', .) + 2] %>%
-        str_split('<|>') %>%
-        extract2(1) %>%
+        stringr::str_split('<|>') %>%
+        magrittr::extract2(1) %>%
         .[grep(',', .)] %>%
         trimws() %>%
         gsub('&#039;', '\'', .)
@@ -150,12 +150,12 @@ EP_Ind_Scraper <- function(website, Agerange = c(17, 25), draft.year = T, draft.
           stat_table <- cbind(Birth_Country, stat_table)
         } else {
           split_birth <- Birth_Place %>%
-            str_split(', ') %>%
-            extract2(1)
+            stringr::str_split(', ') %>%
+            magrittr::extract2(1)
           
           if(length(split_birth) == 2) {
             Birth_Country <- split_birth[2]
-            if(str_length(split_birth[1]) == 2 & split_birth[1] == toupper(split_birth[1])) {
+            if(stringr::str_length(split_birth[1]) == 2 & split_birth[1] == toupper(split_birth[1])) {
               Birth_State <- split_birth[1]
               Birth_City <- NA
             } else {
@@ -181,7 +181,7 @@ EP_Ind_Scraper <- function(website, Agerange = c(17, 25), draft.year = T, draft.
     if(dbsep & date.birth) {
       Birth_Date <- Birth_Date %>%
         as.character() %>%
-        str_split('-') %>%
+        stringr::str_split('-') %>%
         .[[1]]
       
       Birth_Day <- Birth_Date[3]
@@ -223,11 +223,11 @@ EP_Ind_Scraper <- function(website, Agerange = c(17, 25), draft.year = T, draft.
         
         draft_statement <- information %>%
           .[grep('<div (.*) Drafted', .)[length(grep('<div (.*) Drafted', .))]+1] %>%
-          str_split('>|<') %>%
-          extract2(1) %>%
+          stringr::str_split('>|<') %>%
+          magrittr::extract2(1) %>%
           .[grep('#', .)] %>%
           trimws() %>%
-          str_split(' ') %>%
+          stringr::str_split(' ') %>%
           extract2(1)
         
         Draft_Year <- draft_statement %>%
@@ -265,8 +265,8 @@ EP_Ind_Scraper <- function(website, Agerange = c(17, 25), draft.year = T, draft.
     #Shoot and Position information
     Shoots <- information %>%
       .[grep('Shoots', .) + 1] %>%
-      str_split('<|>') %>%
-      extract2(1) %>%
+      stringr::str_split('<|>') %>%
+      magrittr::extract2(1) %>%
       .[length(.) - 2] %>%
       trimws()
     if (Shoots == '-') {
@@ -287,7 +287,7 @@ EP_Ind_Scraper <- function(website, Agerange = c(17, 25), draft.year = T, draft.
       if(grepl('D', Position) & !is.na(Shoots)) {
         #split position based on /
         temp <- Position %>%
-          str_split('/') %>%
+          stringr::str_split('/') %>%
           .[[1]]
         #which entry has D
         num <- temp %>%
@@ -312,7 +312,7 @@ EP_Ind_Scraper <- function(website, Agerange = c(17, 25), draft.year = T, draft.
     stat_table <- cbind(Name, stat_table)
     
     ID <- website %>%
-      str_split('/') %>%
+      stringr::str_split('/') %>%
       .[[1]] %>%
       .[grep('player', .) + 1] %>%
       as.numeric()
@@ -320,7 +320,7 @@ EP_Ind_Scraper <- function(website, Agerange = c(17, 25), draft.year = T, draft.
     
     #returning table
     stat_table <- stat_table %>%
-      select(-age_at_draft)
+      dplyr::select(-age_at_draft)
     
     stat_table
   }
@@ -372,7 +372,7 @@ get_EP_table <- function(html, Season, Need = 'Stats') {
   full_table <- html %>%
     .[right_start:right_end] %>%
     paste(collapse = '\n') %>%
-    readHTMLTable() %>%
+    XML::readHTMLTable() %>%
     .[[1]]
   
   if (length(full_table) == 0) {
@@ -388,10 +388,10 @@ get_EP_table <- function(html, Season, Need = 'Stats') {
   } else if (Season == 'RP') {
     regularseason_table <- full_table %>%
       .[,-(10:ncol(.))] %>%
-      mutate(Regular_Playoffs = 'Regular')
+      dplyr::mutate(Regular_Playoffs = 'Regular')
     playoff_table <- full_table %>%
       .[, -(4:11)] %>%
-      mutate(Regular_Playoffs = 'Playoffs')
+      dplyr::mutate(Regular_Playoffs = 'Playoffs')
     rbind(regularseason_table, playoff_table)
   } else {
     full_table
@@ -415,7 +415,7 @@ exact_age <- function(Years, birthday, rel_date) {
   Years %>%
     gsub('-.*', '', .) %>%
     as.numeric() %>%
-    add(1) %>%
+    magrittr::add(1) %>%
     paste(rel_date, sep = '/') %>%
     as.Date('%Y/%m/%d') %>%
     relative_age(birthday, .)
@@ -431,10 +431,10 @@ relative_age <- function(from, to) {
                 age - 1, age)
   from_lt$year <- from_lt$year + age[1]
   middle_age <- from_lt %>%
-    interval(to_lt[1]) %>%
-    as.period('days') %>%
-    .$day %>%
-    divide_by(365)
+    lubridate::interval(to_lt[1]) %>%
+    lubridate::as.period('days') %$%
+    day %>%
+    magrittr::divide_by(365)
   
   age + middle_age
 }
