@@ -40,18 +40,18 @@ EP_Draft_Scraper <- function(Data, Agerange = c(17, 25), draft.year = T, draft.p
                           place.birth = T, pbsep = T, Country = T, height = T, weight = T, date.birth = T, 
                           dbsep = T, drafted.team = T, reg.playoffs = 'R') {
   links <- paste(readLines(Data), collapse = "\n") %>%
-    str_match_all("<a href=\"(.*?)\"") %>%
+    stringr::str_match_all("<a href=\"(.*?)\"") %>%
     extract2(1)  %>%
     .[-(1:300),2] %>%
     .[grep('player',.)]
   
-  goalie_spots <- read_html(Data) %>%
-    html_nodes("table") %>%
-    html_table(header = T, fill = T) %>%
+  goalie_spots <- xml2::read_html(Data) %>%
+    rvest::html_nodes("table") %>%
+    rvest::html_table(header = T, fill = T) %>%
     extract2(2) %>%
-    filter(!Team %in% paste('ROUND', c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15)) &
+    dplyr::filter(!Team %in% paste('ROUND', c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15)) &
              Player != 'No selection was made') %>%
-    separate(Player, c('Name', 'Position'), '\\(', fill = 'right') %$%
+    tidyr::separate(Player, c('Name', 'Position'), '\\(', fill = 'right') %$%
     Position %>%
     substr(1,1) %>%
     grep("G", .)
