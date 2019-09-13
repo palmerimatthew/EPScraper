@@ -4,12 +4,14 @@
 \alias{EP_League_Links}
 \title{League URL gatherer}
 \usage{
-EP_League_Links(Data, undrafted = T)
+EP_League_Links(Data, undrafted = T, age_restriction = F)
 }
 \arguments{
 \item{Data}{the url of the league and year stats page from eliteprospects.}
 
-\item{undrafted}{Boolean about whether to return only undrafted players, or any players (regardless of whether or not they were drafted).}
+\item{undrafted}{Boolean about whether to return only undrafted players, or all players (regardless of whether or not they were drafted).}
+
+\item{age_resctriction}{Use this to select the values that would be in the 'All ages' dropdown on eliteprospects. If you want all players, set this to F or NA. valid values: (U14-U30, O30, O35, O40)}
 }
 \value{
 A vector of player eliteprospects URLs
