@@ -55,18 +55,6 @@ EP_League_Links <- function(Data, undrafted = T) {
 }
 
 
-draft_boolean <- function(website) {
-  html <- website %>%
-    readLines()
-  
-  information <- get_EP_Information(html)
-  
-  drafted <- information %>%
-    grep('Drafted', .)
-  
-  length(drafted) != 0
-}
-
 get_EP_Information <- function(html) {
   
   right_start <- html %>%
