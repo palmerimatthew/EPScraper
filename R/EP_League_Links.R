@@ -2,7 +2,7 @@
 #'
 #' Reutrns a list of URLs of the players from a league stats URL.
 #' @param Data the url of the league and year stats page from eliteprospects.
-#' @param undrafted Boolean about whether to return only undrafted players, or any players (regardless of whether or not they were drafted).
+#' @param undrafted Boolean about whether to return only undrafted players, or all players (regardless of whether or not they were drafted).
 #' @return A vector of player eliteprospects URLs
 #' @export
 
@@ -20,7 +20,11 @@ EP_League_Links <- function(Data, undrafted = T) {
   all_links <- character(0)
   
   for(i in 1:num_pages) {
-    website <- paste0(Data, '?page=', i)
+    if(grepl('drafted-players', Data)) {
+      website <- paste0(Data, '&page=', i)
+    } else {
+      website <- paste0(Data, '?page=', i)
+    }
     html <- website %>%
       readLines()
     links <- html %>%
@@ -28,7 +32,7 @@ EP_League_Links <- function(Data, undrafted = T) {
       stringr::str_match_all("<a href=\"(.*?)\"") %>%
       .[[1]] %>%
       .[-(1:300),2] %>%
-      .[grep('player', .)]
+      .[grep('/player/', .)]
     
     first_goalie_link <- html %>%
       get_EP_table('AB', 'Undrafted') %$%
@@ -43,11 +47,11 @@ EP_League_Links <- function(Data, undrafted = T) {
     links <- links[-(first_goalie_link:length(links))]
     all_links <- c(all_links, links)
   }
-  boolean <- rep(T, length(all_links))
-  for(i in 1:length(all_links)) {
-    boolean[i] <- !draft_boolean(all_links[i])
+  if(undrafted) {
+    drafted_links <- EP_League_Links(paste0(Data, '?prospects=drafted-players'), undrafted = F)
+    all_links <- all_links[!(all_links %in% drafted_links)]
   }
-  all_links[boolean]
+  all_links
 }
 
 
