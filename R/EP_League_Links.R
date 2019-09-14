@@ -56,9 +56,8 @@ EP_League_Links <- function(Data, undrafted = T, age_restriction = F) {
         .[1] %>%
         as.character() %>%
         gsub(' ', '-', .) %>%
-        iconv(., to="ASCII//TRANSLIT") %>%
-        gsub('~', '', .) %>%
-        gsub('\\!', '', .) %>%
+        stringi::stri_trans_general(id = "Latin-ASCII") %>%
+        gsub("[^[:alnum:]-]","", .) %>%
         tolower() %>%
         grep(links) %>%
         as.numeric() %>%
