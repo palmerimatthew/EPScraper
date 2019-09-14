@@ -51,18 +51,12 @@ EP_League_Links <- function(Data, undrafted = T, age_restriction = F) {
     if(length(first_goalie_link) == 0) {
       first_goalie_link <- length(links) + 1
     } else {
-      first_goalie_link <- first_goalie_link %$%
-        Player %>%
-        .[1] %>%
-        as.character() %>%
-        gsub(' ', '-', .) %>%
-        stringi::stri_trans_general(id = "Latin-ASCII") %>%
-        gsub("[^[:alnum:]-]","", .) %>%
-        tolower() %>%
-        grep(links) %>%
-        as.numeric() %>%
-        .[1]
+      first_goalie_link <- first_goalie_link %>%
+        nrow() %>%
+        magrittr::subtract(length(links), .) %>%
+        magrittr::add(1)
     }
+    
     if (first_goalie_link <= length(links)) {
       links <- links[-(first_goalie_link:length(links))]
     }
