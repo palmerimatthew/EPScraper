@@ -17,13 +17,14 @@ EP_League_Links <- function(Data, undrafted = T, age_restriction = F) {
       Data <- paste0(Data, '?age=', age_restriction)
     }
   }
-  num_pages <- Data %>%
+  num_players <- Data %>%
     readLines() %>%
     .[grep('table-pagination', .)+1] %>%
     .[1] %>%
     gsub(' players found', '', .) %>%
     gsub(' ', '', .) %>%
-    as.numeric() %>%
+    as.numeric()
+  num_pages <- num_players %>%
     magrittr::divide_by(100) %>%
     ceiling()
   
@@ -37,6 +38,10 @@ EP_League_Links <- function(Data, undrafted = T, age_restriction = F) {
     } else {
       website <- paste0(Data, '?page=', i)
     }
+    players_current_page <- num_players %>%
+      subtract((i-1)*100) %>%
+      min(100)
+    
     html <- website %>%
       readLines()
     links <- html %>%
@@ -44,22 +49,9 @@ EP_League_Links <- function(Data, undrafted = T, age_restriction = F) {
       stringr::str_match_all("<a href=\"(.*?)\"") %>%
       .[[1]] %>%
       .[-(1:300),2] %>%
-      .[grep('/player/', .)]
+      .[grep('/player/', .)] %>%
+      .[1:players_current_page]
     
-    first_goalie_link <- html %>%
-      get_EP_table('AB', 'Undrafted')
-    if(length(first_goalie_link) == 0) {
-      first_goalie_link <- length(links) + 1
-    } else {
-      first_goalie_link <- first_goalie_link %>%
-        nrow() %>%
-        magrittr::subtract(length(links), .) %>%
-        magrittr::add(1)
-    }
-    
-    if (first_goalie_link <= length(links)) {
-      links <- links[-(first_goalie_link:length(links))]
-    }
     all_links <- c(all_links, links)
   }
   if(undrafted) {
@@ -73,20 +65,36 @@ EP_League_Links <- function(Data, undrafted = T, age_restriction = F) {
   all_links
 }
 
-
-get_EP_Information <- function(html) {
-  
+get_EP_table <- function(html) {
   right_start <- html %>%
-    grep('plyr_details', .) %>%
+    grep('<table(.*) goalie-stats', .) %>%
     as.numeric()
-  
   right_end <- html %>%
-    grep('</section>', .) %>%
+    grep('</table>', .) %>%
     .[. > right_start] %>%
     .[1] %>%
     as.numeric()
   
-  html[right_start:right_end]
+  full_table <- html %>%
+    .[right_start:right_end]
+  
+  remove_lines1 <- full_table %>%
+    grep('</tbody>', .) %>%
+    .[-length(.)]
+  
+  remove_lines2 <- remove_lines1 - 8
+  
+  remove_lines <- numeric(0)
+  
+  for(i in 1:length(remove_lines1)) {
+    temp <- remove_lines2[i]:remove_lines1[i]
+    remove_lines <- c(remove_lines, temp)
+  }
+  
+  full_table <- full_table %>%
+    .[-remove_lines] %>%
+    XML::readHTMLTable() %>%
+    .[[1]]
 }
 
 get_EP_table <- function(html, Season, Need = 'Stats') {
