@@ -56,6 +56,9 @@ EP_League_Links <- function(Data, undrafted = T, age_restriction = F) {
         .[1] %>%
         as.character() %>%
         gsub(' ', '-', .) %>%
+        iconv(., to="ASCII//TRANSLIT") %>%
+        gsub('~', '', .) %>%
+        gsub('\\!', '', .) %>%
         tolower() %>%
         grep(links) %>%
         as.numeric() %>%
@@ -68,9 +71,9 @@ EP_League_Links <- function(Data, undrafted = T, age_restriction = F) {
   }
   if(undrafted) {
     if(grepl('\\?', Data)) {
-      drafted_links <- EP_League_Links(paste0(Data, '&prospects=drafted-players'), undrafted = F, age_restriction)
+      drafted_links <- EP_League_Links(paste0(Data, '&prospects=drafted-players'), undrafted = F)
     } else {
-      drafted_links <- EP_League_Links(paste0(Data, '?prospects=drafted-players'), undrafted = F, age_restriction)
+      drafted_links <- EP_League_Links(paste0(Data, '?prospects=drafted-players'), undrafted = F)
     }
     all_links <- all_links[!(all_links %in% drafted_links)]
   }
