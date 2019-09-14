@@ -11,7 +11,7 @@ EP_League_Links(Data, undrafted = T, age_restriction = F)
 
 \item{undrafted}{Boolean about whether to return only undrafted players, or all players (regardless of whether or not they were drafted).}
 
-\item{age_resctriction}{Use this to select the values that would be in the 'All ages' dropdown on eliteprospects. If you want all players, set this to F or NA. valid values: (U14-U30, O30, O35, O40)}
+\item{age_resctriction}{Use this to select the values that would be in the 'All ages' dropdown on eliteprospects. If you want all players, set this to F or NA. valid values: (u14-u30, o30, o35, o40)}
 }
 \value{
 A vector of player eliteprospects URLs

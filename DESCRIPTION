@@ -12,6 +12,7 @@ Imports:
     lubridate (>= 1.7.4),
     magrittr (>= 1.5),
     rvest (>= 0.3.2),
+    stringi (>= 1.4.3),
     stringr (>= 1.4.0),
     tidyr (>= 0.8.3),
     XML (>= 3.98-1.19)
