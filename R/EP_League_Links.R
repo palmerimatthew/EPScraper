@@ -41,30 +41,23 @@ EP_League_Links <- function(Data, undrafted = T, age_restriction = F) {
     html <- website %>%
       readLines()
     
-    right_start <- html %>%
-      grep('<table (.*) player-stats', .)
+    start <- html %>%
+      grep('<table(.*) player-stats', .) %>%
+      as.numeric()
     
-    right_end <- html %>%
+    end <- html %>%
       grep('</table>', .) %>%
-      .[. > right_start] %>%
+      .[. > start] %>%
       .[1] %>%
       as.numeric()
     
-    players_current_page <- html %>%
-      .[right_start:right_end] %>%
-      .[grep('<td (.*)"position"', .)] %>%
-      .[length(.)] %>%
-      gsub('<(.*?)>', '', .) %>%
-      as.numeric() %>%
-      subtract(100*(i-1))
-    
     links <- html %>%
+      .[start:end] %>%
       paste(collapse = '\n') %>%
       stringr::str_match_all("<a href=\"(.*?)\"") %>%
       .[[1]] %>%
-      .[-(1:300),2] %>%
-      .[grep('/player/', .)] %>%
-      .[1:players_current_page]
+      .[, 2] %>%
+      .[grep('/player/', .)]
     
     all_links <- c(all_links, links)
   }
@@ -77,89 +70,4 @@ EP_League_Links <- function(Data, undrafted = T, age_restriction = F) {
     all_links <- all_links[!(all_links %in% drafted_links)]
   }
   all_links
-}
-
-get_EP_table <- function(html) {
-  right_start <- html %>%
-    grep('<table(.*) goalie-stats', .) %>%
-    as.numeric()
-  right_end <- html %>%
-    grep('</table>', .) %>%
-    .[. > right_start] %>%
-    .[1] %>%
-    as.numeric()
-  
-  full_table <- html %>%
-    .[right_start:right_end]
-  
-  remove_lines1 <- full_table %>%
-    grep('</tbody>', .) %>%
-    .[-length(.)]
-  
-  remove_lines2 <- remove_lines1 - 8
-  
-  remove_lines <- numeric(0)
-  
-  for(i in 1:length(remove_lines1)) {
-    temp <- remove_lines2[i]:remove_lines1[i]
-    remove_lines <- c(remove_lines, temp)
-  }
-  
-  full_table <- full_table %>%
-    .[-remove_lines] %>%
-    XML::readHTMLTable() %>%
-    .[[1]]
-}
-
-get_EP_table <- function(html, Season, Need = 'Stats') {
-  
-  if(Need == 'Stats') {
-    right_start <- html %>%
-      grep('<table(.*) player-stats', .) %>%
-      .[1] %>%
-      as.numeric()
-  } else if(Need == 'Career') {
-    right_start <- html %>%
-      grep('<table(.*) total-player-stats', .) %>%
-      as.numeric()
-  } else if(Need == 'Undrafted') {
-    right_start <- html %>%
-      grep('<table(.*) goalie-stats', .) %>%
-      as.numeric()
-  }
-  
-  right_end <- html %>%
-    grep('</table>', .) %>%
-    .[. > right_start] %>%
-    .[1] %>%
-    as.numeric()
-  
-  full_table <- html %>%
-    .[right_start:right_end] %>%
-    paste(collapse = '\n') %>%
-    XML::readHTMLTable() %>%
-    .[[1]]
-  
-  if (length(full_table) == 0) {
-    full_table
-  } else if (Season == 'R') {
-    full_table %>%
-      .[,-(10:ncol(.))]
-    
-  } else if (Season == 'P') {
-    full_table %>%
-      .[, -(4:10)]
-    
-  } else if (Season == 'RP') {
-    regularseason_table <- full_table %>%
-      .[,-(10:ncol(.))] %>%
-      dplyr::mutate(Regular_Playoffs = 'Regular')
-    playoff_table <- full_table %>%
-      .[, -(4:11)] %>%
-      dplyr::mutate(Regular_Playoffs = 'Playoffs')
-    rbind(regularseason_table, playoff_table)
-  } else {
-    full_table
-  }
-  
 }
