@@ -17,14 +17,13 @@ EP_League_Links <- function(Data, undrafted = T, age_restriction = F) {
       Data <- paste0(Data, '?age=', age_restriction)
     }
   }
-  num_players <- Data %>%
+  num_pages <- Data %>%
     readLines() %>%
     .[grep('table-pagination', .)+1] %>%
     .[1] %>%
     gsub(' players found', '', .) %>%
     gsub(' ', '', .) %>%
-    as.numeric()
-  num_pages <- num_players %>%
+    as.numeric() %>%
     magrittr::divide_by(100) %>%
     ceiling()
   
@@ -38,12 +37,27 @@ EP_League_Links <- function(Data, undrafted = T, age_restriction = F) {
     } else {
       website <- paste0(Data, '?page=', i)
     }
-    players_current_page <- num_players %>%
-      subtract((i-1)*100) %>%
-      min(100)
     
     html <- website %>%
       readLines()
+    
+    right_start <- html %>%
+      grep('<table (.*) player-stats', .)
+    
+    right_end <- html %>%
+      grep('</table>', .) %>%
+      .[. > right_start] %>%
+      .[1] %>%
+      as.numeric()
+    
+    players_current_page <- html %>%
+      .[right_start:right_end] %>%
+      .[grep('<td (.*)"position"', .)] %>%
+      .[length(.)] %>%
+      gsub('<(.*?)>', '', .) %>%
+      as.numeric() %>%
+      subtract(100*(i-1))
+    
     links <- html %>%
       paste(collapse = '\n') %>%
       stringr::str_match_all("<a href=\"(.*?)\"") %>%
