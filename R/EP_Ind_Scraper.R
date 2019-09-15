@@ -308,7 +308,8 @@ EP_Ind_Scraper <- function(website, Agerange = c(17, 25), draft.year = T, draft.
     Name <- information %>%
       .[(grep('plytitle', .)+1):(grep('plytitle', .) + 3)] %>%
       .[!grepl('<', .)] %>%
-      trimws()
+      trimws() %>%
+      .[1]
     stat_table <- cbind(Name, stat_table)
     
     ID <- website %>%
