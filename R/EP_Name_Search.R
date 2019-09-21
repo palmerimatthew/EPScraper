@@ -1,6 +1,6 @@
 #' Name Search Scrapper
 #'
-#' Reutrns a list of URLs of the players from a league stats URL.
+#' Returns a list of URLs of the players from a league stats URL.
 #' @param Name A string of the desired player's name
 #' @return A vector of player eliteprospects URLs with the same name
 #' @export

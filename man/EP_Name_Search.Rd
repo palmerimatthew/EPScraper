@@ -13,5 +13,5 @@ EP_Name_Search(Name)
 A vector of player eliteprospects URLs with the same name
 }
 \description{
-Reutrns a list of URLs of the players from a league stats URL.
+Returns a list of URLs of the players from a league stats URL.
 }
