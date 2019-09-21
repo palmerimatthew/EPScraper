@@ -4,10 +4,12 @@
 \alias{EP_Name_Search}
 \title{Name Search Scrapper}
 \usage{
-EP_Name_Search(Name)
+EP_Name_Search(Name, include_db = F)
 }
 \arguments{
 \item{Name}{A string of the desired player's name}
+
+\item{include_db}{Boolean to determine if you also want to return birthdate information alongside the links}
 }
 \value{
 A vector of player eliteprospects URLs with the same name
