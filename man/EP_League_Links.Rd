@@ -17,5 +17,5 @@ EP_League_Links(Data, undrafted = T, age_restriction = F)
 A vector of player eliteprospects URLs
 }
 \description{
-Reutrns a list of URLs of the players from a league stats URL.
+Returns a list of URLs of the players from a league stats URL.
 }

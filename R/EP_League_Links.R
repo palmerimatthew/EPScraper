@@ -1,6 +1,6 @@
 #' League URL gatherer
 #'
-#' Reutrns a list of URLs of the players from a league stats URL.
+#' Returns a list of URLs of the players from a league stats URL.
 #' @param Data the url of the league and year stats page from eliteprospects.
 #' @param undrafted Boolean about whether to return only undrafted players, or all players (regardless of whether or not they were drafted).
 #' @param age_resctriction Use this to select the values that would be in the 'All ages' dropdown on eliteprospects. If you want all players, set this to F or NA. valid values: (u14-u30, o30, o35, o40)
