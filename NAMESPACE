@@ -3,3 +3,4 @@
 export(EP_Draft_Scraper)
 export(EP_Ind_Scraper)
 export(EP_League_Links)
+export(EP_Name_Search)
