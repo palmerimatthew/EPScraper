@@ -1,6 +1,6 @@
 Package: EPScraper
 Title: Scrapers For EliteProspects
-Version: 0.0.0.9001
+Version: 0.0.0.9002
 Authors@R: person("Matthew", "Palmeri", email = "matthewpalmeri@outlook.com", role = c("aut", "cre"))
 Description: This package contains functions useful for scrapping information off of the website
     eliteprospects.com. Included in this are functions to gather information for an individual player,
