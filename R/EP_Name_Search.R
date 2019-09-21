@@ -30,15 +30,17 @@ EP_Name_Search <- function(Name, include_db = F) {
     .[grep('/player/', .)]
   
   if(include_db) {
-    Birth_Date <- html %>%
-      .[start:end] %>%
-      XML::readHTMLTable() %>%
-      .[[1]] %$%
-      Born %>%
-      as.character() %>%
-      gsub('\n(.*)', '', .)
-    
-    data.frame(Links, Birth_Date)
+    if(length(Links) > 0) {
+      Birth_Date <- html %>%
+        .[start:end] %>%
+        XML::readHTMLTable() %>%
+        .[[1]] %$%
+        Born %>%
+        as.character() %>%
+        gsub('\n(.*)', '', .)
+      
+      data.frame(Links, Birth_Date) 
+    }
   } else {
     Links
   }
